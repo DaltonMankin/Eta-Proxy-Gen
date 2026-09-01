@@ -6,10 +6,17 @@ import ProxyForm from './ProxyForm';
 import ProxyCanvas from './ProxyCanvas';
 
 export default function ProxyGeneration() {
-  const [formData, setCardData] = useState<CardData | null>(null);
+  const [cardData, setCardData] = useState<CardData>({
+    cardName: "",
+    manaCost: "",
+    illustration: "",
+    typeLine: "",
+    textBox: "",
+    powerToughness: "",
+  });
 
   function handleOnSubmit(formData: FormData) {
-      console.log("form data", formData);
+      console.log(formData);
       const newCardData: CardData = {
         cardName: formData.get("cardName")?.toString() || "",
         manaCost: formData.get("manaCost")?.toString() || "",
@@ -25,7 +32,7 @@ export default function ProxyGeneration() {
   return (
     <Fragment>
       <ProxyForm onSubmit={handleOnSubmit} />
-      <ProxyCanvas cardData={formData} />
+      <ProxyCanvas cardData={cardData} />
     </Fragment>
   );
 }
