@@ -1,4 +1,19 @@
-export default function ProxyForm({ onSubmit }: { onSubmit: (formData: FormData) => void }) {
+import type CardData from '../../types/CardData';
+
+export default function ProxyForm({ handleOnSubmit }: { handleOnSubmit: (cardData: CardData) => void }) {
+
+    function onSubmit(formData: FormData) {
+        const newCardData: CardData = {
+            cardName: formData.get("cardName")?.toString() || "",
+            manaCost: formData.get("manaCost")?.toString() || "",
+            illustration: formData.get("illustration")?.valueOf() as File || null,
+            typeLine: formData.get("typeLine")?.toString() || "",
+            textBox: formData.get("textBox")?.toString() || "",
+            powerToughness: formData.get("powerToughness")?.toString() || "",
+        }
+        handleOnSubmit(newCardData);
+    }
+
     return (
         <form action={onSubmit}>
             <label>

@@ -9,29 +9,19 @@ export default function ProxyGeneration() {
   const [cardData, setCardData] = useState<CardData>({
     cardName: "",
     manaCost: "",
-    illustration: "",
+    illustration: null,
     typeLine: "",
     textBox: "",
     powerToughness: "",
   });
 
-  function handleOnSubmit(formData: FormData) {
-      console.log(formData);
-      const newCardData: CardData = {
-        cardName: formData.get("cardName")?.toString() || "",
-        manaCost: formData.get("manaCost")?.toString() || "",
-        illustration: formData.get("illustration")?.toString() || "",
-        typeLine: formData.get("typeLine")?.toString() || "",
-        textBox: formData.get("textBox")?.toString() || "",
-        powerToughness: formData.get("powerToughness")?.toString() || "",
-      }
-      console.log(newCardData);
+  function handleOnSubmit(newCardData: CardData) {
       setCardData(newCardData);
   }
 
   return (
     <Fragment>
-      <ProxyForm onSubmit={handleOnSubmit} />
+      <ProxyForm handleOnSubmit={handleOnSubmit} />
       <ProxyCanvas cardData={cardData} />
     </Fragment>
   );
