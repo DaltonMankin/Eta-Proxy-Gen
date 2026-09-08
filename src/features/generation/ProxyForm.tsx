@@ -2,7 +2,9 @@ import type CardData from '../../types/CardData';
 
 export default function ProxyForm({ handleOnSubmit }: { handleOnSubmit: (cardData: CardData) => void }) {
 
-    function onSubmit(formData: FormData) {
+    function onSubmit(event: React.SubmitEvent<HTMLFormElement>) {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
         const newCardData: CardData = {
             cardName: formData.get("cardName")?.toString() || "",
             manaCost: formData.get("manaCost")?.toString() || "",
@@ -15,7 +17,7 @@ export default function ProxyForm({ handleOnSubmit }: { handleOnSubmit: (cardDat
     }
 
     return (
-        <form action={onSubmit}>
+        <form onSubmit={onSubmit}>
             <label>
                 Card Name: 
                 <input type="text" name="cardName" />
