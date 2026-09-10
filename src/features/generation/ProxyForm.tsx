@@ -5,6 +5,7 @@ export default function ProxyForm({ handleOnSubmit }: { handleOnSubmit: (cardDat
     function onSubmit(event: React.SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
+
         const newCardData: CardData = {
             cardName: formData.get("cardName")?.toString() || "",
             manaCost: formData.get("manaCost")?.toString() || "",
@@ -13,6 +14,7 @@ export default function ProxyForm({ handleOnSubmit }: { handleOnSubmit: (cardDat
             textBox: formData.get("textBox")?.toString() || "",
             powerToughness: formData.get("powerToughness")?.toString() || "",
         }
+        
         handleOnSubmit(newCardData);
     }
 
@@ -30,7 +32,7 @@ export default function ProxyForm({ handleOnSubmit }: { handleOnSubmit: (cardDat
             <br />
             <label>
                 Illustration: 
-                <input type="file" name="illustration" />
+                <input type="file" accept="image/*" name="illustration" />
             </label>
             <br />
             <label>
