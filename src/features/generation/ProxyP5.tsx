@@ -14,10 +14,12 @@ export default function ProxyP5({ cardData }: { cardData: CardData }) {
 
     s.draw = async () => {
       s.background(255);
-      s.fill(0);
       s.textSize(24);
-      const img = await s.loadImage(cardData.illustrationUrl as string);
-      s.image(img, 5, 30, 240, 240 * (img.height / img.width));
+
+      if (cardData.illustrationUrl) {
+        const img = await s.loadImage(cardData.illustrationUrl as string);
+        s.image(img, 5, 30, 240, 240 * (img.height / img.width));
+      }
       s.text(cardData.cardName, 5, 25);
       s.text(cardData.manaCost, 225, 25);
       s.text(cardData.typeLine, 5, 240);
