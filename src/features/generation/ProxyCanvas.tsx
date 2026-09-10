@@ -6,9 +6,9 @@ export default function ProxyCanvas({ cardData }: { cardData: CardData }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const drawCard = (context: CanvasRenderingContext2D, cardData: CardData) => {
-    if (cardData.illustration) {
+    if (cardData.illustrationFile) {
       const reader = new FileReader();
-      reader.readAsDataURL(cardData.illustration as File);
+      reader.readAsDataURL(cardData.illustrationFile as File);
 
       reader.onloadend = () => {
         const img = new Image();

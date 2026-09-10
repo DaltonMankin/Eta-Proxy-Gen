@@ -1,7 +1,8 @@
 export default interface CardData {
     cardName: string;
     manaCost: string;
-    illustration: File | null;
+    illustrationFile: File | null;
+    illustrationUrl: string | null;
     typeLine: string;
     textBox: string;
     powerToughness: string;

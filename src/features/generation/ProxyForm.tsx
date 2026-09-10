@@ -6,16 +6,22 @@ export default function ProxyForm({ handleOnSubmit }: { handleOnSubmit: (cardDat
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
 
-        const newCardData: CardData = {
-            cardName: formData.get("cardName")?.toString() || "",
-            manaCost: formData.get("manaCost")?.toString() || "",
-            illustration: formData.get("illustration")?.valueOf() as File || null,
-            typeLine: formData.get("typeLine")?.toString() || "",
-            textBox: formData.get("textBox")?.toString() || "",
-            powerToughness: formData.get("powerToughness")?.toString() || "",
+        const reader = new FileReader();
+        reader.readAsDataURL(formData.get("illustration")?.valueOf() as File);
+
+        reader.onloadend = () => {
+            const newCardData: CardData = {
+                cardName: formData.get("cardName")?.toString() || "",
+                manaCost: formData.get("manaCost")?.toString() || "",
+                illustrationFile: formData.get("illustration")?.valueOf() as File || null,
+                illustrationUrl: reader.result as string,
+                typeLine: formData.get("typeLine")?.toString() || "",
+                textBox: formData.get("textBox")?.toString() || "",
+                powerToughness: formData.get("powerToughness")?.toString() || "",
+            }
+
+            handleOnSubmit(newCardData);
         }
-        
-        handleOnSubmit(newCardData);
     }
 
     return (
