@@ -40,8 +40,20 @@ export default function ProxyP5({ cardData }: { cardData: CardData }) {
 async function DrawIllustration(s: p5, cardData: CardData, MARGIN: number) {
   s.push();
   if (cardData.illustrationUrl && cardData.illustrationUrl.length > 0) {
+    s.imageMode(s.CENTER);
     const img = await s.loadImage(cardData.illustrationUrl as string);
-    s.image(img, MARGIN * 2, MARGIN * 2, 250 - (MARGIN * 4), (250 - (MARGIN * 4)) * (img.height / img.width));
+
+    const imgWidth = 250 - (MARGIN * 4);
+    const imgHeight = imgWidth * (img.height / img.width);
+
+    const minY = (MARGIN * 2) + (imgHeight / 2);
+
+    const yPos = minY < s.height * (2 / 7)
+      ? s.height * (2 / 7)
+      : minY;
+
+    s.translate(s.width / 2, yPos);
+    s.image(img, 0, 0, imgWidth, imgHeight);
   }
   s.pop();
 }
