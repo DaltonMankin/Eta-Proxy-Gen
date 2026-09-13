@@ -22,6 +22,8 @@ export default function ProxyP5({ cardData }: { cardData: CardData }) {
       const cardNameBounds = await DrawCardName(s, cardData, MARGIN);
       await DrawManaCost(s, cardData, MARGIN);
       await DrawTypeLine(s, cardData, MARGIN, cardNameBounds);
+
+      await DrawPowerToughness(s, cardData, MARGIN);
     }
   };
 
@@ -45,6 +47,10 @@ async function DrawIllustration(s: p5, cardData: CardData, MARGIN: number) {
 }
 
 async function DrawCardName(s: p5, cardData: CardData, MARGIN: number) : Promise<Bounds> {
+  if (!cardData.cardName || cardData.cardName.length === 0) {
+    return { x: 0, y: 0, w: 0, h: 0 };
+  }
+
   s.push();
   s.textSize(24);
   s.rectMode(s.CENTER);
@@ -67,6 +73,10 @@ async function DrawCardName(s: p5, cardData: CardData, MARGIN: number) : Promise
 }
 
 async function DrawManaCost(s: p5, cardData: CardData, MARGIN: number) : Promise<Bounds> {
+  if (!cardData.manaCost || cardData.manaCost.length === 0) {
+    return { x: 0, y: 0, w: 0, h: 0 };
+  }
+
   s.push();
   s.textSize(24);
   s.rectMode(s.CENTER);
@@ -89,6 +99,10 @@ async function DrawManaCost(s: p5, cardData: CardData, MARGIN: number) : Promise
 }
 
 async function DrawTypeLine(s: p5, cardData: CardData, MARGIN: number, cardNameBounds: Bounds) : Promise<Bounds> {
+  if (!cardData.typeLine || cardData.typeLine.length === 0) {
+    return { x: 0, y: 0, w: 0, h: 0 };
+  }
+  
   s.push();
   s.textSize(24);
   s.rectMode(s.CENTER);
@@ -104,8 +118,34 @@ async function DrawTypeLine(s: p5, cardData: CardData, MARGIN: number, cardNameB
   s.pop();
 
   return {
+    x: MARGIN + (bounds.w / 2),
+    y: cardNameBounds.y + (cardNameBounds.h / 2) + MARGIN + (bounds.h / 2),
+    w: bounds.w + MARGIN,
+    h: bounds.h + MARGIN,
+  };
+}
+
+async function DrawPowerToughness(s: p5, cardData: CardData, MARGIN: number) : Promise<Bounds> {
+  if (!cardData.powerToughness || cardData.powerToughness.length === 0) {
+    return { x: 0, y: 0, w: 0, h: 0 };
+  }
+
+  s.push();
+  s.textSize(24);
+  s.rectMode(s.CENTER);
+  s.textAlign(s.CENTER, s.CENTER);
+  let bounds = s.textBounds(cardData.powerToughness, 0, 0);
+  s.fill(255);
+  s.noStroke();
+  s.translate(s.width - (MARGIN + (bounds.w / 2)), s.height - (MARGIN + (bounds.h / 2)));
+  s.rect(0, 0, bounds.w + MARGIN, bounds.h + MARGIN);  
+  s.fill(0);
+  s.text(cardData.powerToughness, 0, 0);
+  s.pop();
+  
+  return {
     x: s.width - (MARGIN + (bounds.w / 2)),
-    y: MARGIN + (bounds.h / 2),
+    y: s.height - (MARGIN + (bounds.h / 2)),
     w: bounds.w + MARGIN,
     h: bounds.h + MARGIN,
   };
