@@ -4,6 +4,7 @@ import p5 from 'p5';
 import useP5js from '../../hooks/useP5js';
 
 import type CardData from '../../types/CardData';
+import type Bounds from '../../types/Bounds';
 
 export default function ProxyP5({ cardData }: { cardData: CardData }) {
   const sketch = (s: p5) => {
@@ -13,42 +14,14 @@ export default function ProxyP5({ cardData }: { cardData: CardData }) {
     }
 
     s.draw = async () => {
-      const MARGIN = 4;
+      const MARGIN = 6;
 
-      s.background(255);
+      s.background(0);
 
-      if (cardData.illustrationUrl) {
-        const img = await s.loadImage(cardData.illustrationUrl as string);
-        s.image(img, MARGIN * 2, MARGIN * 2, 250 - (MARGIN * 4), (250 - (MARGIN * 4)) * (img.height / img.width));
-      }
-
-      s.textSize(24);
-      s.textAlign(s.LEFT, s.TOP);
-      let cardNameBounds = s.fontBounds(cardData.cardName, 0, 0);
-      s.fill(255);
-      s.noStroke();
-      s.rect(MARGIN, MARGIN, cardNameBounds.w + MARGIN, cardNameBounds.h + (MARGIN / 2));
-      s.fill(0);
-      s.text(cardData.cardName, MARGIN + MARGIN - (MARGIN / 2), MARGIN + (MARGIN / 2));
-
-      s.textSize(24);
-      s.textAlign(s.LEFT, s.TOP);
-      let manaCostBounds = s.fontBounds(cardData.manaCost, 0, 0);
-      s.fill(255);
-      s.noStroke();
-      s.rect(s.width - (manaCostBounds.w + MARGIN + MARGIN), MARGIN, manaCostBounds.w + MARGIN, manaCostBounds.h + (MARGIN / 2));
-      s.fill(0);
-      s.text(cardData.manaCost, s.width - (manaCostBounds.w + MARGIN + MARGIN - (MARGIN / 2)), MARGIN + (MARGIN / 2));
-
-      s.textSize(24);
-      s.textAlign(s.LEFT, s.TOP);
-      s.text(cardData.typeLine, 5, 240);
-
-      s.textSize(24);
-      s.text(cardData.textBox, 5, 260);
-
-      s.textSize(24);
-      s.text(cardData.powerToughness, 200, 345);
+      await DrawIllustration(s, cardData, MARGIN);
+      const cardNameBounds = await DrawCardName(s, cardData, MARGIN);
+      await DrawManaCost(s, cardData, MARGIN);
+      await DrawTypeLine(s, cardData, MARGIN, cardNameBounds);
     }
   };
 
@@ -60,4 +33,80 @@ export default function ProxyP5({ cardData }: { cardData: CardData }) {
       <div ref={p5Ref}></div>
     </Fragment>
   );
+}
+
+async function DrawIllustration(s: p5, cardData: CardData, MARGIN: number) {
+  s.push();
+  if (cardData.illustrationUrl && cardData.illustrationUrl.length > 0) {
+    const img = await s.loadImage(cardData.illustrationUrl as string);
+    s.image(img, MARGIN * 2, MARGIN * 2, 250 - (MARGIN * 4), (250 - (MARGIN * 4)) * (img.height / img.width));
+  }
+  s.pop();
+}
+
+async function DrawCardName(s: p5, cardData: CardData, MARGIN: number) : Promise<Bounds> {
+  s.push();
+  s.textSize(24);
+  s.rectMode(s.CENTER);
+  s.textAlign(s.CENTER, s.CENTER);
+  let bounds = s.textBounds(cardData.cardName, 0, 0);
+  s.fill(255);
+  s.noStroke();
+  s.translate(MARGIN + (bounds.w / 2), MARGIN + (bounds.h / 2));
+  s.rect(0, 0, bounds.w + MARGIN, bounds.h + MARGIN);
+  s.fill(0);
+  s.text(cardData.cardName, 0, 0);
+  s.pop();
+  
+  return {
+    x: MARGIN + (bounds.w / 2),
+    y: MARGIN + (bounds.h / 2),
+    w: bounds.w + MARGIN,
+    h: bounds.h + MARGIN,
+  };
+}
+
+async function DrawManaCost(s: p5, cardData: CardData, MARGIN: number) : Promise<Bounds> {
+  s.push();
+  s.textSize(24);
+  s.rectMode(s.CENTER);
+  s.textAlign(s.CENTER, s.CENTER);
+  let bounds = s.textBounds(cardData.manaCost, 0, 0);
+  s.fill(255);
+  s.noStroke();
+  s.translate(s.width - (MARGIN + (bounds.w / 2)), MARGIN + (bounds.h / 2));
+  s.rect(0, 0, bounds.w + MARGIN, bounds.h + MARGIN);  
+  s.fill(0);
+  s.text(cardData.manaCost, 0, 0);
+  s.pop();
+  
+  return {
+    x: s.width - (MARGIN + (bounds.w / 2)),
+    y: MARGIN + (bounds.h / 2),
+    w: bounds.w + MARGIN,
+    h: bounds.h + MARGIN,
+  };
+}
+
+async function DrawTypeLine(s: p5, cardData: CardData, MARGIN: number, cardNameBounds: Bounds) : Promise<Bounds> {
+  s.push();
+  s.textSize(24);
+  s.rectMode(s.CENTER);
+  s.textAlign(s.CENTER, s.CENTER);
+  let bounds = s.textBounds(cardData.typeLine, 0, 0);
+  s.fill(255);
+  s.noStroke();
+  s.translate(0, cardNameBounds.y + (cardNameBounds.h / 2));
+  s.translate(MARGIN + (bounds.w / 2), MARGIN + (bounds.h / 2));
+  s.rect(0, 0, bounds.w + MARGIN, bounds.h + MARGIN);
+  s.fill(0);
+  s.text(cardData.typeLine, 0, 0);
+  s.pop();
+
+  return {
+    x: s.width - (MARGIN + (bounds.w / 2)),
+    y: MARGIN + (bounds.h / 2),
+    w: bounds.w + MARGIN,
+    h: bounds.h + MARGIN,
+  };
 }
