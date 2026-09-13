@@ -3,6 +3,8 @@ import p5 from 'p5';
 
 import useP5js from '../../hooks/useP5js';
 
+import placeholder from '../../assets/placeholder.jpg';
+
 import type CardData from '../../types/CardData';
 import type Bounds from '../../types/Bounds';
 
@@ -38,23 +40,33 @@ export default function ProxyP5({ cardData }: { cardData: CardData }) {
 }
 
 async function DrawIllustration(s: p5, cardData: CardData, MARGIN: number) {
-  s.push();
+  let img: p5.Image | null = null;
+
   if (cardData.illustrationUrl && cardData.illustrationUrl.length > 0) {
-    s.imageMode(s.CENTER);
-    const img = await s.loadImage(cardData.illustrationUrl as string);
-
-    const imgWidth = s.width - (MARGIN * 2);
-    const imgHeight = imgWidth * (img.height / img.width);
-
-    const minY = (MARGIN) + (imgHeight / 2);
-
-    const yPos = minY < s.height * (2 / 7)
-      ? s.height * (2 / 7)
-      : minY;
-
-    s.translate(s.width / 2, yPos);
-    s.image(img, 0, 0, imgWidth, imgHeight);
+    try {
+      img = await s.loadImage(cardData.illustrationUrl as string);
+    }
+    catch (error) {
+      img = await s.loadImage(placeholder);
+    }
   }
+  else {
+    img = await s.loadImage(placeholder);
+  }
+
+  s.push();
+  //const img = await s.loadImage(cardData.illustrationUrl as string);
+  s.imageMode(s.CENTER);
+  const imgWidth = s.width - (MARGIN * 2);
+  const imgHeight = imgWidth * (img.height / img.width);
+
+  const minY = (MARGIN) + (imgHeight / 2);
+  const yPos = minY < s.height * (2 / 7)
+    ? s.height * (2 / 7)
+    : minY;
+
+  s.translate(s.width / 2, yPos);
+  s.image(img, 0, 0, imgWidth, imgHeight);
   s.pop();
 }
 

@@ -6,20 +6,28 @@ export default function ProxyForm({ handleOnSubmit }: { handleOnSubmit: (cardDat
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
 
-        const reader = new FileReader();
-        reader.readAsDataURL(formData.get("illustration")?.valueOf() as File);
+        const newCardData: CardData = {
+            cardName: formData.get("cardName")?.toString() || "",
+            manaCost: formData.get("manaCost")?.toString() || "",
+            illustrationUrl: "",
+            typeLine: formData.get("typeLine")?.toString() || "",
+            textBox: formData.get("textBox")?.toString() || "",
+            powerToughness: formData.get("powerToughness")?.toString() || "",
+        }
 
-        reader.onloadend = () => {
-            const newCardData: CardData = {
-                cardName: formData.get("cardName")?.toString() || "",
-                manaCost: formData.get("manaCost")?.toString() || "",
-                illustrationFile: formData.get("illustration")?.valueOf() as File || null,
-                illustrationUrl: reader.result as string,
-                typeLine: formData.get("typeLine")?.toString() || "",
-                textBox: formData.get("textBox")?.toString() || "",
-                powerToughness: formData.get("powerToughness")?.toString() || "",
+        const illustrationFile = formData.get("illustration")?.valueOf() as File | null;
+
+        if (illustrationFile && illustrationFile.size > 0) {
+            const reader = new FileReader();
+            reader.readAsDataURL(formData.get("illustration")?.valueOf() as File);
+
+            reader.onloadend = () => {
+                newCardData.illustrationUrl = reader.result as string;
+
+                handleOnSubmit(newCardData);
             }
-
+        }
+        else{
             handleOnSubmit(newCardData);
         }
     }
