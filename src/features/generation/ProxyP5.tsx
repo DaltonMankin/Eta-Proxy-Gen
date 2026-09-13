@@ -14,7 +14,7 @@ export default function ProxyP5({ cardData }: { cardData: CardData }) {
     }
 
     s.draw = async () => {
-      const MARGIN = 6;
+      const MARGIN = 8;
 
       s.background(0);
 
@@ -43,10 +43,10 @@ async function DrawIllustration(s: p5, cardData: CardData, MARGIN: number) {
     s.imageMode(s.CENTER);
     const img = await s.loadImage(cardData.illustrationUrl as string);
 
-    const imgWidth = 250 - (MARGIN * 4);
+    const imgWidth = s.width - (MARGIN * 2);
     const imgHeight = imgWidth * (img.height / img.width);
 
-    const minY = (MARGIN * 2) + (imgHeight / 2);
+    const minY = (MARGIN) + (imgHeight / 2);
 
     const yPos = minY < s.height * (2 / 7)
       ? s.height * (2 / 7)
