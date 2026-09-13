@@ -22,8 +22,8 @@ export default function ProxyP5({ cardData }: { cardData: CardData }) {
       const cardNameBounds = await DrawCardName(s, cardData, MARGIN);
       await DrawManaCost(s, cardData, MARGIN);
       await DrawTypeLine(s, cardData, MARGIN, cardNameBounds);
-
-      await DrawPowerToughness(s, cardData, MARGIN);
+      const powerToughnessBounds = await DrawPowerToughness(s, cardData, MARGIN);
+      await DrawTextBox(s, cardData, MARGIN, powerToughnessBounds);
     }
   };
 
@@ -146,6 +146,32 @@ async function DrawPowerToughness(s: p5, cardData: CardData, MARGIN: number) : P
   return {
     x: s.width - (MARGIN + (bounds.w / 2)),
     y: s.height - (MARGIN + (bounds.h / 2)),
+    w: bounds.w + MARGIN,
+    h: bounds.h + MARGIN,
+  };
+}
+
+async function DrawTextBox(s: p5, cardData: CardData, MARGIN: number, powerToughnessBounds: Bounds) : Promise<Bounds> {
+  if (!cardData.textBox || cardData.textBox.length === 0) {
+    return { x: 0, y: 0, w: 0, h: 0 };
+  }
+
+  s.push();
+  s.textSize(24);
+  s.rectMode(s.CENTER);
+  s.textAlign(s.CENTER, s.CENTER);
+  let bounds = s.textBounds(cardData.textBox, 0, 0);
+  s.fill(255);
+  s.noStroke();
+  s.translate(s.width / 2, s.height * (11 / 14));
+  s.rect(0, 0, bounds.w + MARGIN, bounds.h + MARGIN);  
+  s.fill(0);
+  s.text(cardData.textBox, 0, 0);
+  s.pop();
+  
+  return {
+    x: s.width / 2,
+    y: s.height * (11 / 14),
     w: bounds.w + MARGIN,
     h: bounds.h + MARGIN,
   };
