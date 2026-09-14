@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import p5 from 'p5';
 
 import useP5js from '../../hooks/useP5js';
+import ditherImage from '../../utils/ditherImage';
 
 import placeholder from '../../assets/placeholder.jpg';
 
@@ -40,6 +41,29 @@ export default function ProxyP5({ cardData }: { cardData: CardData }) {
 }
 
 async function DrawIllustration(s: p5, cardData: CardData, MARGIN: number) {
+  let img: p5.Image | null = await loadImage(cardData, s);
+
+  if (img == null)
+    return;
+
+  await ditherImage(s, img);
+
+  s.push();
+  s.imageMode(s.CENTER);
+  const imgWidth = s.width - (MARGIN * 2);
+  const imgHeight = imgWidth * (img.height / img.width);
+
+  const minY = (MARGIN) + (imgHeight / 2);
+  const yPos = minY < s.height * (2 / 7)
+    ? s.height * (2 / 7)
+    : minY;
+
+  s.translate(s.width / 2, yPos);
+  s.image(img, 0, 0, imgWidth, imgHeight);
+  s.pop();
+}
+
+async function loadImage(cardData: CardData, s: p5) : Promise<p5.Image | null> {
   let img: p5.Image | null = null;
 
   if (cardData.illustrationUrl && cardData.illustrationUrl.length > 0) {
@@ -54,20 +78,7 @@ async function DrawIllustration(s: p5, cardData: CardData, MARGIN: number) {
     img = await s.loadImage(placeholder);
   }
 
-  s.push();
-  //const img = await s.loadImage(cardData.illustrationUrl as string);
-  s.imageMode(s.CENTER);
-  const imgWidth = s.width - (MARGIN * 2);
-  const imgHeight = imgWidth * (img.height / img.width);
-
-  const minY = (MARGIN) + (imgHeight / 2);
-  const yPos = minY < s.height * (2 / 7)
-    ? s.height * (2 / 7)
-    : minY;
-
-  s.translate(s.width / 2, yPos);
-  s.image(img, 0, 0, imgWidth, imgHeight);
-  s.pop();
+  return img;
 }
 
 async function DrawCardName(s: p5, cardData: CardData, MARGIN: number) : Promise<Bounds> {
