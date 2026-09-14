@@ -1,4 +1,4 @@
-import type CardData from '../../types/CardData';
+import type CardData from '../../../../types/CardData';
 
 export default function ProxyForm({ handleOnSubmit }: { handleOnSubmit: (cardData: CardData) => void }) {
 

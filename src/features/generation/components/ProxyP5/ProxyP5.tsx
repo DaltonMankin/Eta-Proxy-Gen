@@ -1,13 +1,15 @@
 import { Fragment } from 'react'
 import p5 from 'p5';
 
-import useP5js from '../../hooks/useP5js';
-import ditherImage from '../../utils/ditherImage';
+import useP5js from '../../../../hooks/useP5js';
+import ditherImage from '../../../../utils/DitherImage';
 
-import placeholder from '../../assets/placeholder.jpg';
+import placeholder from '../../../assets/placeholder.jpg';
 
-import type CardData from '../../types/CardData';
-import type Bounds from '../../types/Bounds';
+import type CardData from '../../../../types/CardData';
+import type Bounds from '../../../../types/Bounds';
+
+import styles from './ProxyP5.module.css'
 
 export default function ProxyP5({ cardData }: { cardData: CardData }) {
   const sketch = (s: p5) => {
@@ -19,14 +21,14 @@ export default function ProxyP5({ cardData }: { cardData: CardData }) {
     s.draw = async () => {
       const MARGIN = 8;
 
-      s.background(0);
+      s.background(255);
 
       await DrawIllustration(s, cardData, MARGIN);
       const cardNameBounds = await DrawCardName(s, cardData, MARGIN);
       await DrawManaCost(s, cardData, MARGIN);
       await DrawTypeLine(s, cardData, MARGIN, cardNameBounds);
-      const powerToughnessBounds = await DrawPowerToughness(s, cardData, MARGIN);
-      await DrawTextBox(s, cardData, MARGIN, powerToughnessBounds);
+      await DrawPowerToughness(s, cardData, MARGIN);
+      await DrawTextBox(s, cardData, MARGIN);
     }
   };
 
@@ -35,7 +37,7 @@ export default function ProxyP5({ cardData }: { cardData: CardData }) {
   return (
     <Fragment>
       <h2>Proxy P5.js</h2>
-      <div ref={p5Ref}></div>
+      <div ref={p5Ref} className={styles.canvasContainer}></div>
     </Fragment>
   );
 }
@@ -46,20 +48,19 @@ async function DrawIllustration(s: p5, cardData: CardData, MARGIN: number) {
   if (img == null)
     return;
 
+  await resizeImage(s, img, MARGIN);
   await ditherImage(s, img);
 
   s.push();
   s.imageMode(s.CENTER);
-  const imgWidth = s.width - (MARGIN * 2);
-  const imgHeight = imgWidth * (img.height / img.width);
 
-  const minY = (MARGIN) + (imgHeight / 2);
+  const minY = (MARGIN) + (img.height / 2);
   const yPos = minY < s.height * (2 / 7)
     ? s.height * (2 / 7)
     : minY;
 
   s.translate(s.width / 2, yPos);
-  s.image(img, 0, 0, imgWidth, imgHeight);
+  s.image(img, 0, 0, img.width, img.height);
   s.pop();
 }
 
@@ -79,6 +80,12 @@ async function loadImage(cardData: CardData, s: p5) : Promise<p5.Image | null> {
   }
 
   return img;
+}
+
+async function resizeImage(s: p5, image: p5.Image, MARGIN: number) {
+  const imgWidth = s.width - (MARGIN * 2);
+  const imgHeight = imgWidth * (image.height / image.width);
+  image.resize(imgWidth, imgHeight)
 }
 
 async function DrawCardName(s: p5, cardData: CardData, MARGIN: number) : Promise<Bounds> {
@@ -186,7 +193,7 @@ async function DrawPowerToughness(s: p5, cardData: CardData, MARGIN: number) : P
   };
 }
 
-async function DrawTextBox(s: p5, cardData: CardData, MARGIN: number, powerToughnessBounds: Bounds) : Promise<Bounds> {
+async function DrawTextBox(s: p5, cardData: CardData, MARGIN: number) : Promise<Bounds> {
   if (!cardData.textBox || cardData.textBox.length === 0) {
     return { x: 0, y: 0, w: 0, h: 0 };
   }
