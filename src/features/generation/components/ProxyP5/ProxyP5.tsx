@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import p5 from 'p5';
 
 import useP5js from '../../../../hooks/useP5js';
-import ditherImage from '../../../../utils/DitherImage';
+import ditherImage from '../../../../utils/DitherImage.tsx';
 
 import placeholder from '../../../assets/placeholder.jpg';
 
