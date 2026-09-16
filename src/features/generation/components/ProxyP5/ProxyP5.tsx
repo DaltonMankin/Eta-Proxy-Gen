@@ -15,11 +15,11 @@ export default function ProxyP5({ cardData }: { cardData: CardData }) {
   const sketch = (s: p5) => {
     s.setup = async () => {
       s.noLoop();
-      s.createCanvas(250, 350);
+      s.createCanvas(750 , 1050);
     }
 
     s.draw = async () => {
-      const MARGIN = 8;
+      const MARGIN = 16;
 
       s.background(255);
 
@@ -94,14 +94,22 @@ async function DrawCardName(s: p5, cardData: CardData, MARGIN: number) : Promise
   }
 
   s.push();
-  s.textSize(24);
+  s.textSize(64);
   s.rectMode(s.CENTER);
   s.textAlign(s.CENTER, s.CENTER);
   let bounds = s.textBounds(cardData.cardName, 0, 0);
   s.fill(255);
   s.noStroke();
-  s.translate(MARGIN + (bounds.w / 2), MARGIN + (bounds.h / 2));
+  s.translate((MARGIN * 2) + (bounds.w / 2), (MARGIN * 2) + (bounds.h / 2));
+  
+  s.push();
+  s.drawingContext.shadowOffsetX = 1;
+  s.drawingContext.shadowOffsetY = 1;
+  s.drawingContext.shadowBlur = 1;
+  s.drawingContext.shadowColor = 'black';
   s.rect(0, 0, bounds.w + MARGIN, bounds.h + MARGIN);
+  s.pop();
+
   s.fill(0);
   s.text(cardData.cardName, 0, 0);
   s.pop();
@@ -120,15 +128,22 @@ async function DrawManaCost(s: p5, cardData: CardData, MARGIN: number) : Promise
   }
 
   s.push();
-  s.textSize(24);
+  s.textSize(64);
   s.rectMode(s.CENTER);
   s.textAlign(s.CENTER, s.CENTER);
   let bounds = s.textBounds(cardData.manaCost, 0, 0);
   s.fill(255);
   s.noStroke();
-  s.translate(s.width - (MARGIN + (bounds.w / 2)), MARGIN + (bounds.h / 2));
-  s.rect(0, 0, bounds.w + MARGIN, bounds.h + MARGIN);  
-  s.fill(0);
+  s.translate(s.width - ((MARGIN * 2) + (bounds.w / 2)), (MARGIN * 2) + (bounds.h / 2));
+
+  s.push();
+  s.drawingContext.shadowOffsetX = 1;
+  s.drawingContext.shadowOffsetY = 1;
+  s.drawingContext.shadowBlur = 1;
+  s.drawingContext.shadowColor = 'black';
+  s.rect(0, 0, bounds.w + MARGIN, bounds.h + MARGIN);
+  s.pop();  s.fill(0);
+
   s.text(cardData.manaCost, 0, 0);
   s.pop();
   
@@ -146,15 +161,23 @@ async function DrawTypeLine(s: p5, cardData: CardData, MARGIN: number, cardNameB
   }
   
   s.push();
-  s.textSize(24);
+  s.textSize(42);
   s.rectMode(s.CENTER);
   s.textAlign(s.CENTER, s.CENTER);
   let bounds = s.textBounds(cardData.typeLine, 0, 0);
   s.fill(255);
   s.noStroke();
   s.translate(0, cardNameBounds.y + (cardNameBounds.h / 2));
-  s.translate(MARGIN + (bounds.w / 2), MARGIN + (bounds.h / 2));
+  s.translate((MARGIN * 2) + (bounds.w / 2), (MARGIN * 2) + (bounds.h / 2));
+
+  s.push();
+  s.drawingContext.shadowOffsetX = 1;
+  s.drawingContext.shadowOffsetY = 1;
+  s.drawingContext.shadowBlur = 1;
+  s.drawingContext.shadowColor = 'black';
   s.rect(0, 0, bounds.w + MARGIN, bounds.h + MARGIN);
+  s.pop();
+
   s.fill(0);
   s.text(cardData.typeLine, 0, 0);
   s.pop();
@@ -173,15 +196,24 @@ async function DrawPowerToughness(s: p5, cardData: CardData, MARGIN: number) : P
   }
 
   s.push();
-  s.textSize(24);
+  s.textSize(64);
   s.rectMode(s.CENTER);
   s.textAlign(s.CENTER, s.CENTER);
   let bounds = s.textBounds(cardData.powerToughness, 0, 0);
   s.fill(255);
   s.noStroke();
-  s.translate(s.width - (MARGIN + (bounds.w / 2)), s.height - (MARGIN + (bounds.h / 2)));
-  s.rect(0, 0, bounds.w + MARGIN, bounds.h + MARGIN);  
+  s.translate(s.width - ((MARGIN * 2) + (bounds.w / 2)), s.height - ((MARGIN * 2) + (bounds.h / 2)));
+
+  s.push();
+  s.drawingContext.shadowOffsetX = 1;
+  s.drawingContext.shadowOffsetY = 1;
+  s.drawingContext.shadowBlur = 1;
+  s.drawingContext.shadowColor = 'black';
+  s.rect(0, 0, bounds.w + MARGIN, bounds.h + MARGIN);
+  s.pop();
+
   s.fill(0);
+
   s.text(cardData.powerToughness, 0, 0);
   s.pop();
   
@@ -199,14 +231,22 @@ async function DrawTextBox(s: p5, cardData: CardData, MARGIN: number) : Promise<
   }
 
   s.push();
-  s.textSize(24);
+  s.textSize(42);
   s.rectMode(s.CENTER);
   s.textAlign(s.CENTER, s.CENTER);
   let bounds = s.textBounds(cardData.textBox, 0, 0);
   s.fill(255);
   s.noStroke();
   s.translate(s.width / 2, s.height * (11 / 14));
-  s.rect(0, 0, bounds.w + MARGIN, bounds.h + MARGIN);  
+  
+  s.push();
+  s.drawingContext.shadowOffsetX = 1;
+  s.drawingContext.shadowOffsetY = 1;
+  s.drawingContext.shadowBlur = 1;
+  s.drawingContext.shadowColor = 'black';
+  s.rect(0, 0, bounds.w + MARGIN, bounds.h + MARGIN);
+  s.pop();
+
   s.fill(0);
   s.text(cardData.textBox, 0, 0);
   s.pop();
